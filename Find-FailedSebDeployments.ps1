@@ -1,6 +1,50 @@
 <#
 .SYNOPSIS
 Finds machines where an SEB config deployment did not succeed.
+
+.DESCRIPTION
+Compares the full list of expected machine names with the machine names found in
+the deployment success output folder.
+
+By default, the script assumes each successful machine is represented by a .txt
+file named after the machine, for example:
+
+    CLUSTER-PC-01.txt
+    CLUSTER-PC-02.txt
+
+If your .txt files contain machine names inside the files instead, run with:
+
+    -SuccessSource Content
+
+.PARAMETER ExpectedMachinesFile
+Path to a text file containing all machines that should receive the deployment.
+Use one machine name per line.
+
+.PARAMETER SuccessFolder
+Path to the folder containing the successful deployment .txt files.
+
+.PARAMETER SuccessSource
+Use FileName when successful machines are represented by .txt filenames.
+Use Content when successful machines are listed inside the .txt files.
+
+.PARAMETER OutputFile
+Optional path where the failed machine names should be written.
+
+.PARAMETER SebConfigName
+Optional room or SEB configuration description to include in the deployment
+summary.
+
+.EXAMPLE
+.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile .\Room101-Machines.txt -SuccessFolder .\SuccessfulDeployments
+
+.EXAMPLE
+.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile .\Room101-Machines.txt -SuccessFolder .\SuccessfulDeployments -OutputFile .\FailedDeployments.txt
+
+.EXAMPLE
+.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile .\Room101-Machines.txt -SuccessFolder .\SuccessfulDeployments -SuccessSource Content
+
+.EXAMPLE
+.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile .\Room101-Machines.txt -SuccessFolder .\SuccessfulDeployments -SebConfigName "Room 101 - Maths SEB Config"
 #>
 
 [CmdletBinding()]
@@ -14,7 +58,9 @@ param(
     [ValidateSet('FileName', 'Content')]
     [string]$SuccessSource = 'FileName',
 
-    [string]$OutputFile
+    [string]$OutputFile,
+
+    [string]$SebConfigName
 )
 
 if ([string]::IsNullOrWhiteSpace($ExpectedMachinesFile)) {
@@ -23,6 +69,18 @@ if ([string]::IsNullOrWhiteSpace($ExpectedMachinesFile)) {
 
 if ([string]::IsNullOrWhiteSpace($SuccessFolder)) {
     $SuccessFolder = Read-Host 'Enter path to the folder containing successful deployment .txt files'
+}
+
+if ([string]::IsNullOrWhiteSpace($SebConfigName)) {
+    $SebConfigName = Read-Host 'Enter SEB configuration name or room information (optional)'
+}
+
+$ExpectedMachinesFile = $ExpectedMachinesFile.Trim().Trim('"').Trim("'")
+$SuccessFolder = $SuccessFolder.Trim().Trim('"').Trim("'")
+$SebConfigName = $SebConfigName.Trim().Trim('"').Trim("'")
+
+if ([string]::IsNullOrWhiteSpace($SebConfigName)) {
+    $SebConfigName = 'Not specified'
 }
 
 if (-not (Test-Path $ExpectedMachinesFile -PathType Leaf)) {
@@ -92,6 +150,7 @@ $failedMachines = foreach ($machine in $expectedMachines) {
 Write-Host ''
 Write-Host 'SEB deployment check'
 Write-Host '--------------------'
+Write-Host "SEB config / room:   $SebConfigName"
 Write-Host "Expected machines:   $($expectedMachines.Count)"
 Write-Host "Successful machines: $($successfulMachines.Count)"
 Write-Host "Failed machines:     $($failedMachines.Count)"
