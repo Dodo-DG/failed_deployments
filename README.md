@@ -174,27 +174,16 @@ use `-SuccessSource Content`.
 Example:
 
 ```powershell
-cd "C:\Path\To\SEB FAILED DEPLOYMENTS"
+cd "Z:\Documentation\"
 ```
 
 3. Run the script:
 
 ```powershell
-.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile "C:\Path\To\Room101-Machines.txt" -SuccessFolder "C:\Path\To\SuccessfulDeployments" -PasswordFile "C:\Path\To\seb-password.txt" -BuildFile "C:\Path\To\seb-build.txt"
+.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile "Z:\Documentation\All Cluster Machines\DEPARTMENT_ROOMNUMBER.txt" -SuccessFolder "Z:\Deployment Summary\DEPARTMENT-ROOMNUMBER-YYYY-MM-DD-ICTTICKET" -PasswordFile "Z:\Documentation\Passwords\YYYY-MM-DD.txt" -BuildFile "Z:\Documentation\Build\MODULE.txt"
 ```
 
-Replace the paths with the real paths on the computer.
-
-## Recommended Command
-
-Use this command when you want the failed machine list saved to a file:
-
-```powershell
-.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile "C:\Path\To\Room101-Machines.txt" -SuccessFolder "C:\Path\To\SuccessfulDeployments" -PasswordFile "C:\Path\To\seb-password.txt" -BuildFile "C:\Path\To\seb-build.txt" -OutputFile "C:\Path\To\FailedDeployments.txt"
-```
-
-This creates a file called `FailedDeployments.txt` containing only the machines
-where the deployment was not successful.
+Replace the names with the real ones based on the day of the exam and the build of the exam.
 
 ## Running Without Parameters
 
@@ -213,13 +202,12 @@ Enter path to the .txt file containing the SEB password (optional)
 Enter path to the .txt file containing the SEB build info (optional)
 ```
 
-When pasting paths into these prompts, paste the path without surrounding
-quotes.
+When pasting paths into these prompts, at the moment it works with the surrounding quotes. If not, you can drop the quotes.
 
 Example:
 
 ```text
-C:\Users\Manager\Desktop\Room101-Machines.txt
+Z:\Documentation\All Cluster Machines\DEPARTMENT_ROOMNUMBER.txt
 ```
 
 ## Example Output
@@ -227,8 +215,8 @@ C:\Users\Manager\Desktop\Room101-Machines.txt
 ```text
 SEB deployment check
 --------------------
-SEB password:        my-secret-password
-SEB build:           Build 2026-05-22
+SEB password:        password
+SEB build:           Build for the day 2026-05-14
 Expected machines:   10
 Successful machines: 9
 Failed machines:     1
@@ -236,6 +224,9 @@ Failed machines:     1
 Machines where deployment was NOT successful:
  - PC10
 ```
+**SAFE TO IGNORE**
+
+All the rooms will have a main Panopto console and another admin machine which also have deployments enabled on them, but they will not be used by the students, hence the sum of failed machines and successful machines might be more than the expected machines. This is expected as the admin and main Panopto console machines are not in the list for Expected machines. 
 
 ## If PowerShell Blocks The Script
 
@@ -255,7 +246,7 @@ This only changes the execution policy for the current PowerShell window.
 If the script says it cannot find the machine list file, check the path:
 
 ```powershell
-Test-Path "C:\Path\To\Room101-Machines.txt" -PathType Leaf
+Test-Path "Z:\Documentation\All Cluster Machines\DEPARTMENT_ROOMNUMBER.txt" -PathType Leaf
 ```
 
 It should return:
@@ -268,7 +259,7 @@ If the script says it cannot find the successful deployment folder, check the
 folder path:
 
 ```powershell
-Test-Path "C:\Path\To\SuccessfulDeployments" -PathType Container
+Test-Path "Z:\Deployment Summary\DEPARTMENT-ROOMNUMBER-YYYY-MM-DD-ICTTICKET" -PathType Container
 ```
 
 It should return:
@@ -287,13 +278,13 @@ instead of a `.txt` file.
 Correct:
 
 ```powershell
--ExpectedMachinesFile "C:\Path\To\Room101-Machines.txt"
+-ExpectedMachinesFile "Z:\Documentation\All Cluster Machines\DEPARTMENT_ROOMNUMBER.txt"
 ```
 
 Incorrect:
 
 ```powershell
--ExpectedMachinesFile "C:\Path\To"
+-ExpectedMachinesFile "Z:\Documentation\All Cluster Machines"
 ```
 
 ### Success folder was not found
@@ -304,24 +295,13 @@ folder.
 Correct:
 
 ```powershell
--SuccessFolder "C:\Path\To\SuccessfulDeployments"
+-SuccessFolder "Z:\Deployment Summary\DEPARTMENT-ROOMNUMBER-YYYY-MM-DD-ICTTICKET"
 ```
 
 Incorrect:
 
 ```powershell
--SuccessFolder "C:\Path\To\SuccessfulDeployments\PC01.txt"
-```
-
-### Paths contain spaces
-
-If a path contains spaces, put it inside quotes when using command-line
-parameters.
-
-Example:
-
-```powershell
--SuccessFolder "C:\Users\Manager\Desktop\SEB Results\SuccessfulDeployments"
+-SuccessFolder "Z:\Deployment Summary\DEPARTMENT-ROOMNUMBER-YYYY-MM-DD-ICTTICKET\DEPARTMENT_ROOMNUMBER.txt"
 ```
 
 ## Alternative Success File Format
@@ -344,7 +324,7 @@ script with:
 Example:
 
 ```powershell
-.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile "C:\Path\To\Room101-Machines.txt" -SuccessFolder "C:\Path\To\SuccessfulDeployments" -SuccessSource Content
+.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile "Z:\Documentation\All Cluster Machines\DEPARTMENT_ROOMNUMBER.txt" -SuccessFolder "Z:\Deployment Summary\DEPARTMENT-ROOMNUMBER-YYYY-MM-DD-ICTTICKET" -SuccessSource Content
 ```
 
 ## Manager Quick Guide
