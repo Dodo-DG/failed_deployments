@@ -110,13 +110,13 @@ if ($expectedMachines.Count -eq 0) {
 }
 
 if ($SuccessSource -eq 'FileName') {
-    $successfulMachines = Get-ChildItem -Path $SuccessFolder -Filter '*.txt' -File |
+    $successfulMachines = Get-ChildItem -Path $SuccessFolder -Filter '*.txt' -File -Exclude '*AV*' |
         ForEach-Object { $_.BaseName } |
         Get-NormalizedMachineNames |
         Sort-Object -Unique
 }
 else {
-    $successfulMachines = Get-ChildItem -Path $SuccessFolder -Filter '*.txt' -File |
+    $successfulMachines = Get-ChildItem -Path $SuccessFolder -Filter '*.txt' -File -Exclude '*AV*' |
         ForEach-Object { Get-Content -Path $_.FullName } |
         Get-NormalizedMachineNames |
         Sort-Object -Unique
