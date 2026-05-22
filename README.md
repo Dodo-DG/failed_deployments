@@ -1,7 +1,7 @@
 # SEB Failed Deployment Checker
 
 This repository contains a PowerShell script that checks which machines did not
-receive an SEB configuration deployment successfully.
+receive a SEB configuration deployment successfully.
 
 The script is intended for rooms or clusters where another deployment process
 creates `.txt` files for machines where deployment succeeded. This script
