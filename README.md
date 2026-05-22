@@ -73,6 +73,7 @@ because `PC10.txt` is missing from the successful deployment folder.
 
 - (Optional) A `.txt` file containing the SEB password (use `-PasswordFile`)
 - (Optional) A `.txt` file containing the SEB build information (use `-BuildFile`)
+- (Optional) use `-SuccessSource Content` when successful machines are listed inside each `.txt` file
 
 ## Required Input Files
 
@@ -162,7 +163,8 @@ PC09.txt
 ```
 
 By default, the script uses the `.txt` file names as the successful machine
-names.
+names. If the `.txt` files instead contain machine names in their content,
+use `-SuccessSource Content`.
 
 ## How To Run The Script
 
@@ -178,7 +180,7 @@ cd "C:\Path\To\SEB FAILED DEPLOYMENTS"
 3. Run the script:
 
 ```powershell
-.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile "C:\Path\To\Room101-Machines.txt" -SuccessFolder "C:\Path\To\SuccessfulDeployments" -SebConfigName "Room 101 - Maths SEB Config" -PasswordFile "C:\Path\To\seb-password.txt" -BuildFile "C:\Path\To\seb-build.txt"
+.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile "C:\Path\To\Room101-Machines.txt" -SuccessFolder "C:\Path\To\SuccessfulDeployments" -PasswordFile "C:\Path\To\seb-password.txt" -BuildFile "C:\Path\To\seb-build.txt"
 ```
 
 Replace the paths with the real paths on the computer.
@@ -188,7 +190,7 @@ Replace the paths with the real paths on the computer.
 Use this command when you want the failed machine list saved to a file:
 
 ```powershell
-.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile "C:\Path\To\Room101-Machines.txt" -SuccessFolder "C:\Path\To\SuccessfulDeployments" -SebConfigName "Room 101 - Maths SEB Config" -PasswordFile "C:\Path\To\seb-password.txt" -BuildFile "C:\Path\To\seb-build.txt" -OutputFile "C:\Path\To\FailedDeployments.txt"
+.\Find-FailedSebDeployments.ps1 -ExpectedMachinesFile "C:\Path\To\Room101-Machines.txt" -SuccessFolder "C:\Path\To\SuccessfulDeployments" -PasswordFile "C:\Path\To\seb-password.txt" -BuildFile "C:\Path\To\seb-build.txt" -OutputFile "C:\Path\To\FailedDeployments.txt"
 ```
 
 This creates a file called `FailedDeployments.txt` containing only the machines
@@ -207,7 +209,6 @@ It will ask for:
 ```text
 Enter path to the full machine list .txt file
 Enter path to the folder containing successful deployment .txt files
-Enter SEB configuration name or room information (optional)
 Enter path to the .txt file containing the SEB password (optional)
 Enter path to the .txt file containing the SEB build info (optional)
 ```
@@ -226,7 +227,6 @@ C:\Users\Manager\Desktop\Room101-Machines.txt
 ```text
 SEB deployment check
 --------------------
-SEB config / room:   Room 101 - Maths SEB Config
 SEB password:        my-secret-password
 SEB build:           Build 2026-05-22
 Expected machines:   10
