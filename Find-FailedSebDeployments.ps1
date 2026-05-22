@@ -13,7 +13,9 @@ param(
 
     [string]$SebConfigName,
 
-    [string]$PasswordFile
+    [string]$PasswordFile,
+
+    [string]$BuildFile
 )
 
 if ([string]::IsNullOrWhiteSpace($ExpectedMachinesFile)) {
@@ -50,6 +52,27 @@ if (-not [string]::IsNullOrWhiteSpace($PasswordFile)) {
     }
     catch {
         throw "Failed to read password file: $PasswordFile - $($_.Exception.Message)"
+    }
+}
+
+# Handle optional build file containing the SEB build information
+if ([string]::IsNullOrWhiteSpace($BuildFile)) {
+    $BuildFile = Read-Host 'Enter path to the .txt file containing the build info (optional)'
+}
+
+$BuildFile = $BuildFile.Trim().Trim('"').Trim("'")
+
+$SebBuild = 'Not specified'
+if (-not [string]::IsNullOrWhiteSpace($BuildFile)) {
+    if (-not (Test-Path $BuildFile -PathType Leaf)) {
+        throw "Build file was not found: $BuildFile"
+    }
+
+    try {
+        $SebBuild = (Get-Content -Path $BuildFile -Raw).Trim()
+    }
+    catch {
+        throw "Failed to read build file: $BuildFile - $($_.Exception.Message)"
     }
 }
 
@@ -126,6 +149,7 @@ Write-Host 'SEB deployment check'
 Write-Host '--------------------'
 Write-Host "SEB config / room:   $SebConfigName"
 Write-Host "SEB password:        $SebPassword"
+Write-Host "SEB build:           $SebBuild"
 Write-Host "Expected machines:   $($expectedMachines.Count)"
 Write-Host "Successful machines: $($successfulMachines.Count)"
 Write-Host "Failed machines:     $($failedMachines.Count)"
