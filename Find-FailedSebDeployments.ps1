@@ -60,7 +60,9 @@ param(
 
     [string]$OutputFile,
 
-    [string]$SebConfigName
+    [string]$SebConfigName,
+
+    [string]$PasswordFile
 )
 
 if ([string]::IsNullOrWhiteSpace($ExpectedMachinesFile)) {
@@ -78,6 +80,27 @@ if ([string]::IsNullOrWhiteSpace($SebConfigName)) {
 $ExpectedMachinesFile = $ExpectedMachinesFile.Trim().Trim('"').Trim("'")
 $SuccessFolder = $SuccessFolder.Trim().Trim('"').Trim("'")
 $SebConfigName = $SebConfigName.Trim().Trim('"').Trim("'")
+
+# Handle optional password file containing the SEB password
+if ([string]::IsNullOrWhiteSpace($PasswordFile)) {
+    $PasswordFile = Read-Host 'Enter path to the .txt file containing the SEB password (optional)'
+}
+
+$PasswordFile = $PasswordFile.Trim().Trim('"').Trim("'")
+
+$SebPassword = 'Not specified'
+if (-not [string]::IsNullOrWhiteSpace($PasswordFile)) {
+    if (-not (Test-Path $PasswordFile -PathType Leaf)) {
+        throw "Password file was not found: $PasswordFile"
+    }
+
+    try {
+        $SebPassword = (Get-Content -Path $PasswordFile -Raw).Trim()
+    }
+    catch {
+        throw "Failed to read password file: $PasswordFile - $($_.Exception.Message)"
+    }
+}
 
 if ([string]::IsNullOrWhiteSpace($SebConfigName)) {
     $SebConfigName = 'Not specified'
@@ -151,6 +174,7 @@ Write-Host ''
 Write-Host 'SEB deployment check'
 Write-Host '--------------------'
 Write-Host "SEB config / room:   $SebConfigName"
+Write-Host "SEB password:        $SebPassword"
 Write-Host "Expected machines:   $($expectedMachines.Count)"
 Write-Host "Successful machines: $($successfulMachines.Count)"
 Write-Host "Failed machines:     $($failedMachines.Count)"
