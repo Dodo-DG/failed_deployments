@@ -122,13 +122,8 @@ else {
         Sort-Object -Unique
 }
 
-$successfulLookup = @{}
-foreach ($machine in $successfulMachines) {
-    $successfulLookup[$machine] = $true
-}
-
 $failedMachines = foreach ($machine in $expectedMachines) {
-    if (-not $successfulLookup.ContainsKey($machine)) {
+    if ($successfulMachines -notcontains $machine) {
         $machine
     }
 }
